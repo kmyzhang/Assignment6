@@ -44,6 +44,17 @@ fn serialize(v: Value) -> String {
     }
 }
 
+//checks if it is a valid id
+fn valid_id(s : String) -> bool {
+    match s.as_str() {
+        "=" => false,
+        "if" => false,
+        "var" => false,
+        "lam" => false,
+        _ => true,
+    }
+}
+
 fn main() {
     let environment = make_environment();
 
@@ -54,4 +65,10 @@ fn main() {
     assert_eq!(serialize(Value::StringV{s:"test".to_string()}), "test");
     assert_eq!(serialize(Value::BoolV{b:true}), "true");
     assert_eq!(serialize(Value::PrimV{op:"+".to_string()}), "#<primop>");
+    //valid id test cases
+        assert_eq!(valid_id("+".to_string()), true);
+    assert_eq!(valid_id("=".to_string()), false);
+    assert_eq!(valid_id("var".to_string()), false);
+    assert_eq!(valid_id("if".to_string()), false);
+    assert_eq!(valid_id("lam".to_string()), false);
 }
