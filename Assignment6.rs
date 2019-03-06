@@ -66,7 +66,7 @@ fn main() {
     assert_eq!(serialize(Value::BoolV{b:true}), "true");
     assert_eq!(serialize(Value::PrimV{op:"+".to_string()}), "#<primop>");
     //valid id test cases
-        assert_eq!(valid_id("+".to_string()), true);
+    assert_eq!(valid_id("+".to_string()), true);
     assert_eq!(valid_id("=".to_string()), false);
     assert_eq!(valid_id("var".to_string()), false);
     assert_eq!(valid_id("if".to_string()), false);
