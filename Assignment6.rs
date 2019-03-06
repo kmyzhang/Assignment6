@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+//DATA STRUCTURES
 enum ExprC {
     NumC { n: f32 },
     IdC { s: String },
@@ -17,6 +18,7 @@ enum Value {
     PrimV { op: String },
 }
 
+//Environment
 type Environment = HashMap<String, Value>;
 fn make_environment() -> Environment {
     let mut env = Environment::new();
@@ -31,6 +33,25 @@ fn make_environment() -> Environment {
     return env;
 }
 
+//returns a string type of a value
+fn serialize(v: Value) -> String {
+    match v {
+        Value::NumV{ n } => return n.to_string(),
+        Value::StringV{ s } => return s.to_string(),
+        Value::BoolV{ b } => return b.to_string(),
+        Value::CloV{ args, body, env} => return "#<procedure>".to_string(),
+        Value::PrimV{ op } => return "#<primop>".to_string(),
+    }
+}
+
 fn main() {
     let environment = make_environment();
+
+    //TEST CASES
+
+    //Data structures
+    assert_eq!(serialize(Value::NumV{n:1.5}), "1.5");
+    assert_eq!(serialize(Value::StringV{s:"test".to_string()}), "test");
+    assert_eq!(serialize(Value::BoolV{b:true}), "true");
+    assert_eq!(serialize(Value::PrimV{op:"+".to_string()}), "#<primop>");
 }
