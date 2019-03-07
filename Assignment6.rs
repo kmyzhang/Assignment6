@@ -20,6 +20,8 @@ enum Value {
 
 //Environment
 type Environment = HashMap<String, Value>;
+// make_environment : (-> Environment)
+// creates the initial environment
 fn make_environment() -> Environment {
     let mut env = Environment::new();
     env.insert(String::from("+"), Value::PrimV { op: "+".to_string()});
@@ -33,7 +35,8 @@ fn make_environment() -> Environment {
     return env;
 }
 
-//returns a string type of a value
+// serialize : (Value -> String)
+// returns a string type of a value
 fn serialize(v: Value) -> String {
     match v {
         Value::NumV{ n } => return n.to_string(),
@@ -44,7 +47,8 @@ fn serialize(v: Value) -> String {
     }
 }
 
-//checks if it is a valid id
+// valid_id : (String -> Boolean)
+// this function takes in an ID as a string and verifies that it is valid
 fn valid_id(s : String) -> bool {
     match s.as_str() {
         "=" => false,
@@ -55,6 +59,8 @@ fn valid_id(s : String) -> bool {
     }
 }
 
+// this is the main function which creates an initial environment and runs
+// the test cases
 fn main() {
     let environment = make_environment();
 
