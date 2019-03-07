@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::io;
 
 //DATA STRUCTURES
 enum ExprC {
@@ -44,8 +45,51 @@ fn serialize(v: Value) -> String {
     }
 }
 
+fn interp(ex: ExprC, env: Environment) -> Value {
+    match ex {
+        ExprC::NumC{n} => return Value::NumV{n:n},
+        ExprC::StringC{s} => return Value::StringV{s:s},
+        ExprC::LamC{args, body} => return Value::CloV{args, body, env},
+        ExprC::IfC{cond, thenn, elsee} => match interp(unbox(cond), env) {
+            Value::BoolV{b} => if b {
+                    interp(unbox(thenn), env)
+                } else {
+                    interp(unbox(elsee), env)
+                },
+            _ => panic!("invalid type"),
+        }
+        ExprC::LamC{args, body} => Value::StringV{s:"not done".to_string()},
+        ExprC::AppC{func, args} => Value::StringV{s:"not done".to_string()},
+        ExprC::IdC{s} => env_lookup(s,env),
+        _ => panic!("invalid type")
+    }
+}
+
+fn env_lookup(s: String, env: Environment) -> Value{
+    let mut val:Option<&Value> = hash_look(s, env);
+    match val{
+        Option::Some{t:&Value} => return val.unwrap(),
+    }
+}
+
+fn hash_look(s: String, env: Environment) -> Value {
+    env.get(&s),
+}
+
+/*fn hash_look(s: String, env: Environment) -> Option<&Value> {
+    match idc{
+        ExprC::IdC{s} => env.get(&s),
+    }
+}*/
+
+fn unbox<T>(value: Box<T>) -> T {
+    *value
+}
+
 fn main() {
     let environment = make_environment();
+    let mut arg_vec = Vec::new();
+    arg_vec.push("a".to_string());
 
     //TEST CASES
 
@@ -54,4 +98,8 @@ fn main() {
     assert_eq!(serialize(Value::StringV{s:"test".to_string()}), "test");
     assert_eq!(serialize(Value::BoolV{b:true}), "true");
     assert_eq!(serialize(Value::PrimV{op:"+".to_string()}), "#<primop>");
+    assert_eq!(interp(ExprC::IdC{s:"+".to_string()}, environment), Value::PrimV{ op: "+".to_string()});
+
+
+    //assert_eq!(serialize(Value::CloV{["a".to_string(), "b".to_string()], body: Box::new(Value::NumV{n:1.0}), env: make_environment()}), "#<procedure>");
 }
